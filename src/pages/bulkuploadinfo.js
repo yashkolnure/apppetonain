@@ -101,7 +101,7 @@ const handleUpload = async () => {
   try {
     setUploading(true);
     await axios.post(
-      "/api/admin/bulk",
+      "https://petoba.in/api/admin/bulk",
       enrichedData,
       { headers: { Authorization: `Bearer ${token}` } }
     );
