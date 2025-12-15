@@ -347,7 +347,7 @@ const startTour = () => {
     try {
       setRestaurant(prev => ({ ...prev, categoryOrder: newOrder }));
       setShowReorderModal(false);
-      await axios.put(`/api/admin/${restaurantId}/settings`, 
+      await axios.put(`https://petoba.in/api/admin/${restaurantId}/settings`, 
         { categoryOrder: newOrder },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -406,13 +406,13 @@ const startTour = () => {
     if (!restaurantId || !token) return;
     const fetchRestaurant = async () => {
       try {
-        const res = await axios.get(`/api/admin/${restaurantId}/details`, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await axios.get(`https://petoba.in/api/admin/${restaurantId}/details`, { headers: { Authorization: `Bearer ${token}` } });
         setRestaurant(res.data);
       } catch (e) { setError("Failed to fetch restaurant."); }
     };
     const fetchMenu = async () => {
       try {
-        const res = await axios.get(`/api/admin/${restaurantId}/menu`, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await axios.get(`https://petoba.in/api/admin/${restaurantId}/menu`, { headers: { Authorization: `Bearer ${token}` } });
         setExistingItems(res.data);
       } catch (e) { setError("Failed to fetch menu."); }
     };
@@ -454,7 +454,7 @@ const startTour = () => {
     const newMode = currentMode === 'whatsapp' ? 'billing' : 'whatsapp';
     setRestaurant(prev => ({ ...prev, orderMode: newMode }));
     try {
-        await axios.put(`/api/admin/${restaurantId}/settings`, 
+        await axios.put(`https://petoba.in/api/admin/${restaurantId}/settings`, 
             { orderMode: newMode }, 
             { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -526,12 +526,12 @@ const startTour = () => {
 
     const newItem = { ...itemForm, price: parseFloat(itemForm.price), restaurantId, image: imageUrl, inStock: itemForm.inStock ?? true };
     try {
-      await axios.post(`/api/admin/${restaurantId}/menu`, newItem, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.post(`https://petoba.in/api/admin/${restaurantId}/menu`, newItem, { headers: { Authorization: `Bearer ${token}` } });
       setMessage("Item added successfully!");
       setItemForm({ name: "", category: "", description: "", price: "", image: "", _id: null, inStock: true });
       setCustomCategory("");
       setShowItemForm(false); 
-      const res = await axios.get(`/api/admin/${restaurantId}/menu`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.get(`https://petoba.in/api/admin/${restaurantId}/menu`, { headers: { Authorization: `Bearer ${token}` } });
       setExistingItems(res.data);
     } catch (err) { setError("Failed to add item."); }
   };
@@ -544,12 +544,12 @@ const startTour = () => {
         imageUrl = await uploadImageToWordPress(itemForm.image, `${itemForm.name.replace(/\s+/g, "-")}-${Date.now()}.jpg`);
       }
       const updatedItem = { ...itemForm, image: imageUrl, inStock: itemForm.inStock };
-      await axios.put(`/api/admin/${restaurantId}/menu/${itemForm._id}`, updatedItem, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.put(`https://petoba.in/api/admin/${restaurantId}/menu/${itemForm._id}`, updatedItem, { headers: { Authorization: `Bearer ${token}` } });
       
       setItemForm({ name: "", category: "", description: "", price: "", image: "", _id: null, inStock: true });
       setMessage("Updated successfully");
       setShowItemForm(false);
-      const res = await axios.get(`/api/admin/${restaurantId}/menu`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.get(`https://petoba.in/api/admin/${restaurantId}/menu`, { headers: { Authorization: `Bearer ${token}` } });
       setExistingItems(res.data);
     } catch (err) { setError("Update failed."); }
   };
@@ -557,7 +557,7 @@ const startTour = () => {
   const handleDelete = async (id) => {
     if(!window.confirm("Are you sure you want to delete this item?")) return;
     try {
-      await axios.delete(`/api/admin/${restaurantId}/menu/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.delete(`https://petoba.in/api/admin/${restaurantId}/menu/${id}`, { headers: { Authorization: `Bearer ${token}` } });
       setExistingItems(existingItems.filter(item => item._id !== id));
     } catch (err) { console.error("Delete failed"); }
   };
@@ -579,7 +579,7 @@ const startTour = () => {
 
   const handleUpgrade = async (newLevel) => {
     try {
-      const res = await axios.put(`/api/admin/upgrade-membership/${restaurantId}`, { newLevel }, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.put(`https://petoba.in/api/admin/upgrade-membership/${restaurantId}`, { newLevel }, { headers: { Authorization: `Bearer ${token}` } });
       setRestaurant((prev) => ({ ...prev, membership_level: res.data.restaurant.membership_level }));
       setShowUpgrade(false);
     } catch (err) { alert("Upgrade failed"); }

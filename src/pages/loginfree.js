@@ -1,145 +1,202 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Mail, Lock, LogIn, ArrowRight, ArrowLeft, KeyRound, CheckCircle, Hash } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  LogIn,
+  ArrowRight,
+  ArrowLeft,
+  KeyRound,
+  CheckCircle,
+  Hash
+} from "lucide-react";
+
+/* ================= SAFE TOKEN EXPIRY CHECK ================= */
+const isTokenExpired = (token) => {
+  try {
+    if (!token) return true;
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.exp * 1000 < Date.now();
+  } catch {
+    return true;
+  }
+};
 
 function Loginfree() {
   // --- STATE MANAGEMENT ---
-  const [view, setView] = useState("login"); // 'login' -> 'forgot_email' -> 'forgot_otp' -> 'forgot_new_pass'
-  
-  // Form Data
+  const [view, setView] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
-  // Reset Flow Data
+
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(""); // 🆕 Added Confirm Password
-  const [tempToken, setTempToken] = useState(""); 
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [tempToken, setTempToken] = useState("");
 
-  // Feedback
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  
+
   const navigate = useNavigate();
 
-  // --- PAGE TITLE MANAGEMENT ---
+  /* ================= AUTO REDIRECT (FIXED – NO WHITE SCREEN) ================= */
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const restaurantId = localStorage.getItem("restaurantId");
+
+    if (!token || !restaurantId) return;
+
+    if (isTokenExpired(token)) {
+      localStorage.clear();
+      return;
+    }
+
+    navigate("/admin/dashboard", { replace: true });
+  }, [navigate]);
+
+  /* ================= PAGE TITLE ================= */
   useEffect(() => {
     document.title = "Login | Petoba Admin";
   }, []);
 
-  // --- API HANDLERS (Real Backend) ---
-
+  /* ================= LOGIN ================= */
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); 
+    setError("");
     setLoading(true);
+
     try {
-      const res = await fetch("/api/admin/login", {
+      const res = await fetch("https://petoba.in/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password })
       });
+
       const data = await res.json();
+
       if (res.ok) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("restaurantId", data.restaurant._id);
-        navigate("/dashboard");
-      } else { 
-        setError(data.message || "Invalid credentials"); 
+        navigate("/admin/dashboard", { replace: true });
+      } else {
+        setError(data.message || "Invalid credentials");
       }
-    } catch (err) { 
-      setError("Unable to connect to the server."); 
-    } finally { 
-      setLoading(false); 
+    } catch {
+      setError("Unable to connect to the server.");
+    } finally {
+      setLoading(false);
     }
   };
 
+  /* ================= REQUEST OTP ================= */
   const requestOtp = async (e) => {
     e.preventDefault();
-    setError(""); 
+    setError("");
     setLoading(true);
+
     try {
-      const res = await fetch("/api/admin/request-otp", {
+      const res = await fetch("https://petoba.in/api/admin/request-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email })
       });
+
       const data = await res.json();
-      if (res.ok) {
-        setView("forgot_otp"); 
-      } else { 
-        setError(data.message || "Failed to send OTP"); 
-      }
-    } catch (err) { 
-      setError("Network error occurred."); 
-    } finally { 
-      setLoading(false); 
+
+      if (res.ok) setView("forgot_otp");
+      else setError(data.message || "Failed to send OTP");
+    } catch {
+      setError("Network error occurred.");
+    } finally {
+      setLoading(false);
     }
   };
 
+  /* ================= VERIFY OTP ================= */
   const verifyOtp = async (e) => {
     e.preventDefault();
-    setError(""); 
+    setError("");
     setLoading(true);
+
     try {
-      const res = await fetch("/api/admin/verify-otp", {
+      const res = await fetch("https://petoba.in/api/admin/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp }),
+        body: JSON.stringify({ email, otp })
       });
+
       const data = await res.json();
+
       if (res.ok) {
-        setTempToken(data.tempToken); 
-        setView("forgot_new_pass"); 
-      } else { 
-        setError(data.message || "Invalid OTP"); 
+        setTempToken(data.tempToken);
+        setView("forgot_new_pass");
+      } else {
+        setError(data.message || "Invalid OTP");
       }
-    } catch (err) { 
-      setError("Verification failed."); 
-    } finally { 
-      setLoading(false); 
+    } catch {
+      setError("Verification failed.");
+    } finally {
+      setLoading(false);
     }
   };
 
+  /* ================= RESET PASSWORD ================= */
   const resetPassword = async (e) => {
     e.preventDefault();
-    setError(""); 
-    
-    // 🆕 Check Passwords Match
+    setError("");
+
     if (newPassword !== confirmPassword) {
-        setError("Passwords do not match.");
-        return;
+      setError("Passwords do not match.");
+      return;
     }
 
     setLoading(true);
+
     try {
-      const res = await fetch("/api/admin/reset-password-final", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, tempToken, newPassword }),
-      });
+      const res = await fetch(
+        "https://petoba.in/api/admin/reset-password-final",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, tempToken, newPassword })
+        }
+      );
+
       if (res.ok) {
         alert("Password updated successfully! Please login.");
-        window.location.reload();
-      } else { 
+        localStorage.clear();
+        window.location.href = "/"; // 🔥 prevents white screen
+      } else {
         const data = await res.json();
-        setError(data.message || "Failed to update password"); 
+        setError(data.message || "Failed to update password");
       }
-    } catch (err) { 
-      setError("Error updating password."); 
-    } finally { 
-      setLoading(false); 
+    } catch {
+      setError("Error updating password.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // --- RENDER HELPERS ---
+  /* ================= LOADER ================= */
   const Loader = () => (
-    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+        fill="none"
+      />
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.3 0 0 5.3 0 12h4z"
+      />
     </svg>
   );
 
+  /* ================= UI (UNCHANGED FROM YOUR ORIGINAL CODE) ================= */
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center p-4 font-sans  text-slate-800">
       
