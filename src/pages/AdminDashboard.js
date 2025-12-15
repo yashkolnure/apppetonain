@@ -1083,7 +1083,7 @@ const getAggregatedTableItems = (tableOrders) => {
     <button 
       id={`sidebar-${id}`} // 🆕 Added ID here for Driver.js
       onClick={() => { setActiveTab(id); if(window.innerWidth < 1024) setIsSidebarOpen(false); }}
-      className={`w-full flex items-center gap-3 px-6 py-4 text-left transition-colors ${activeTab === id ? "bg-orange-50 text-orange-600 border-r-4 border-orange-600 bg-orange-50" : "text-gray-500 hover:text-orange-500 hover:bg-gray-50"}`}>
+      className={`w-full flex items-center gap-3 px-6 py-2 text-left transition-colors ${activeTab === id ? "bg-orange-50 text-orange-600 border-r-4 border-orange-600 bg-orange-50" : "text-gray-500 hover:text-orange-500 hover:bg-gray-50"}`}>
       <Icon size={20} /> <span className="font-medium">{label}</span>
     </button>
   );
@@ -1100,7 +1100,7 @@ const getAggregatedTableItems = (tableOrders) => {
       {isSidebarOpen && <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setIsSidebarOpen(false)}></div>}
 
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-transform duration-300 lg:relative lg:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
-        <div className="flex items-center gap-3 p-4">
+        <div className="flex items-center gap-0 p-2">
             <img 
                 src={'https://petoba.avenirya.com/wp-content/uploads/2022/07/Untitled-design-6.png'} 
                 alt="Petoba Logo" 
@@ -1111,7 +1111,7 @@ const getAggregatedTableItems = (tableOrders) => {
                 }}
             />
         </div>
-        <nav className="mt-0 flex flex-col gap-2 p-4">
+        <nav className="mt-0 flex flex-col gap-2 p-2">
           <SidebarItem id="tables" label="My Tables" icon={Grid} />
           {/* UPDATED LABEL HERE */}
           <SidebarItem id="orders" label="Live Dashboard" icon={LayoutDashboard} />
