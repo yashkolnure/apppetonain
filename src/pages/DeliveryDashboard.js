@@ -186,7 +186,7 @@ const DeliveryDashboard = () => {
   const fetchOrders = async () => {
     if (!restaurantId) return;
     try {
-      const res = await fetch(`/api/admin/delivery/all/${restaurantId}`);
+      const res = await fetch(`https://petoba.in/api/admin/delivery/all/${restaurantId}`);
       const data = await res.json();
       if (Array.isArray(data)) {
         if (data.length > prevOrderCountRef.current && prevOrderCountRef.current !== 0) {
@@ -206,7 +206,7 @@ const DeliveryDashboard = () => {
     }
 
     try {
-      const res = await fetch(`/api/admin/delivery/status/${orderId}`, {
+      const res = await fetch(`https://petoba.in/api/admin/delivery/status/${orderId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),

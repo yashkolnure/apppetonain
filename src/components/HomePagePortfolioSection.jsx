@@ -9,7 +9,7 @@ const HomePagePortfolioSection = () => {
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        const res = await fetch("/api/admin/restaurants-with-many-menus");
+        const res = await fetch("https://petoba.in/api/admin/restaurants-with-many-menus");
         if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
         const data = await res.json();
 

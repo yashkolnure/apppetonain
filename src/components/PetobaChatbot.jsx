@@ -40,7 +40,7 @@ const handleSend = async () => {
         d: item.description ? item.description.substring(0, 50) : "" 
       }));
 
-      const response = await fetch('/api/admin/chat', { 
+      const response = await fetch('https://petoba.in/api/admin/chat', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

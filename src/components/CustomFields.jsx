@@ -14,7 +14,7 @@ const Icons = {
 };
 
 // Fixed API URL
-const API_BASE_URL = "/api";
+const API_BASE_URL = "https://petoba.in/api";
 
 // --- HELPER COMPONENT (Moved OUTSIDE) ---
 const SocialInput = ({ label, name, value, onChange, icon: Icon, placeholder, colorClass, error }) => (

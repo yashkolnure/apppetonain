@@ -35,7 +35,7 @@ function UploadMenuPage() {
       setJsonData([]);
       setSuccess("");
 
-      const res = await fetch("/api/admin/menu-extract", {
+      const res = await fetch("https://petoba.in/api/admin/menu-extract", {
         method: "POST",
         body: formData,
       });
@@ -89,7 +89,7 @@ function UploadMenuPage() {
 
     try {
       setSaving(true);
-      await axios.post("/api/admin/bulk", enrichedData, {
+      await axios.post("https://petoba.in/api/admin/bulk", enrichedData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSuccess("✅ Menu saved successfully! Redirecting to Dashboard...");

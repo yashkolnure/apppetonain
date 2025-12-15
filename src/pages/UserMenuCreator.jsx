@@ -31,7 +31,7 @@ function UserMenuCreator() {
 
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${apiBase}/api/admin/${restaurantId}/menu`, { headers });
+        const res = await axios.get(`${apiBase}https://petoba.in/api/admin/${restaurantId}/menu`, { headers });
         setMenuItems(res.data);
         const uniqueCategories = [...new Set(res.data.map(item => item.category).filter(Boolean))];
         setCategories(uniqueCategories);
@@ -63,7 +63,7 @@ function UserMenuCreator() {
     try {
       setDeletingIndex(index);
       if (itemId) {
-        await axios.delete(`${apiBase}/api/admin/${restaurantId}/menu/${itemId}`, { headers });
+        await axios.delete(`${apiBase}https://petoba.in/api/admin/${restaurantId}/menu/${itemId}`, { headers });
       }
       const updated = [...menuItems];
       updated.splice(index, 1);
@@ -83,7 +83,7 @@ function UserMenuCreator() {
     setError("");
     // POST to backend
     const res = await axios.post(
-      `${apiBase}/api/admin/${restaurantId}/menu`,
+      `${apiBase}https://petoba.in/api/admin/${restaurantId}/menu`,
       item,
       { headers }
     );
@@ -341,9 +341,9 @@ function UserMenuCreator() {
                               setSavingIndex(globalIndex);
                               const updatedItem = menuItems[globalIndex];
                               if (updatedItem._id) {
-                                await axios.put(`${apiBase}/api/admin/${restaurantId}/menu/${updatedItem._id}`, updatedItem, { headers });
+                                await axios.put(`${apiBase}https://petoba.in/api/admin/${restaurantId}/menu/${updatedItem._id}`, updatedItem, { headers });
                               } else {
-                                await axios.post(`${apiBase}/api/admin/${restaurantId}/menu`, updatedItem, { headers });
+                                await axios.post(`${apiBase}https://petoba.in/api/admin/${restaurantId}/menu`, updatedItem, { headers });
                               }
                               setMessage("Item saved successfully");
                             } catch (err) {

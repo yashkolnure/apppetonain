@@ -25,7 +25,7 @@ const CustomFieldsDisplay = ({ restaurantId }) => {
     const fetchFields = async () => {
       try {
         const res = await fetch(
-          `${API_BASE}/api/admin/custom-fields?restaurantId=${restaurantId}`
+          `${API_BASE}https://petoba.in/api/admin/custom-fields?restaurantId=${restaurantId}`
         );
 
         const data = await res.json();

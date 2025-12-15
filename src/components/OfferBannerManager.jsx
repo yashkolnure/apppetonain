@@ -25,7 +25,7 @@ const OfferBannerManager = ({ restaurantId, token, offers, setOffers }) => {
     if (!restaurantId || !token) return;
     const fetchOffers = async () => {
       try {
-        const res = await fetch(`/api/admin/${restaurantId}/offers`, {
+        const res = await fetch(`https://petoba.in/api/admin/${restaurantId}/offers`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -78,7 +78,7 @@ const OfferBannerManager = ({ restaurantId, token, offers, setOffers }) => {
     setMessage("Uploading...");
     try {
       const imageUrl = await uploadToWordPress(newOffer.file);
-      const res = await fetch(`/api/admin/${restaurantId}/offers`, {
+      const res = await fetch(`https://petoba.in/api/admin/${restaurantId}/offers`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -106,7 +106,7 @@ const OfferBannerManager = ({ restaurantId, token, offers, setOffers }) => {
     if (!window.confirm("Delete this banner?")) return;
     setDeletingId(offerId);
     try {
-      const res = await fetch(`/api/admin/${restaurantId}/offers/${offerId}`, {
+      const res = await fetch(`https://petoba.in/api/admin/${restaurantId}/offers/${offerId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
